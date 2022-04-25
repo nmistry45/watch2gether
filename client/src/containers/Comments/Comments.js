@@ -8,13 +8,15 @@ import {
   updateComment as updateCommentApi,
   deleteComment as deleteCommentApi,
 } from "./api";
+import axios from "axios";
+import { BACKEND_URL } from "../../config";
 
 /**
  * The function to create comments passed from the comment form.
  * @param {]} param0
  * @returns The function returns comments after filtering accoring to parent and child
  */
-const Comments = ({ commentsUrl, currentUserId }) => {
+const Comments = ({ commentsUrl, currentUserId, postData }) => {
   const { user } = useContext(AuthContext);
 
   const [commentsFromBack, setCommentsFromBack] = useState([]);
@@ -30,7 +32,7 @@ const Comments = ({ commentsUrl, currentUserId }) => {
           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       );
   const addComment = (text, parentId) => {
-    createCommentApi(text, parentId, user).then((comment) => {
+    createCommentApi(text, parentId, user, postData.post_id).then((comment) => {
       setCommentsFromBack([comment, ...commentsFromBack]);
       setCommentCurrent(null);
     });
@@ -63,11 +65,32 @@ const Comments = ({ commentsUrl, currentUserId }) => {
   };
 
   useEffect(() => {
+    const postId = { post_id: postData.post_id };
+    axios.post(`${BACKEND_URL}/comments/comment`, postId).then((res) => {
+      const resData = [];
+      const returnArray = [];
+      for (let i = 0; i < res.data.data.length; i++) {
+        resData[i] = res.data.data[i];
+      }
+      resData.forEach((element) => {
+        const returnData = {};
+        returnData.id = element.comment_id;
+        returnData.body = element.comment_text;
+        returnData.username = element.author_name;
+        returnData.userId = element.author_email;
+        returnData.parentId = element.parent_comment_id;
+        returnData.createdAt = element.created_at;
+        returnArray.push(returnData);
+      });
+      setCommentsFromBack(returnArray);
+    });
+  }, []);
+
+  useEffect(() => {
     switch (commentsFromBack.length) {
       case 0:
-        getCommentsApi().then((data) => {
-          setCommentsFromBack(data);
-        });
+        const commentData = getCommentsApi(postData.post_id);
+        setCommentsFromBack(commentData);
         break;
       default:
         console.log("Comment");

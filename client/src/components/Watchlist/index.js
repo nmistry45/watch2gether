@@ -12,6 +12,7 @@ import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import { useHistory } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
+import AccountCircle from "@mui/icons-material/AccountCircle";
 
 // const useStyles = makeStyles({
 //   button: {
@@ -58,7 +59,7 @@ export default function WatchListComp(props) {
           >
             <ListItem>
               <ListItemAvatar>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                <AccountCircle sx={{ fontSize: 45 }} color="primary" />
               </ListItemAvatar>
               <ListItemText
                 sx={{

@@ -10,7 +10,7 @@ import Comments from "../../containers/Comments/Comments";
 // import { BASE_URL } from "../../config";
 import AuthContext from "../../context/AuthContext";
 import POSTER from "../../assets/poster_alter.jpg";
-
+import moment from "moment";
 /**
  * The function creates the component for the individual post page
  * @returns The component of post page with all the styles.
@@ -42,6 +42,11 @@ const PostPageComp = (props) => {
     color: "rgb(153 163 204)",
     fontFamily: "Arial, Helvetica, sans-serif",
   };
+  let postDate = "";
+
+  if (postData) {
+    postDate = moment(postData.creation_date).format("MMMM Do YYYY");
+  }
 
   return (
     <Grid container p={2}>
@@ -82,19 +87,18 @@ const PostPageComp = (props) => {
               </Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary={`${user.user.firstName} ${user.user.lastName}`}
+              // primary={`${user.user.firstName} ${user.user.lastName}`}
+              primary={`${postData.email}`}
               disableTypography="false"
               style={styleObjAuth}
             />
-            <ListItemText style={styleObjPara}>
-              {postData.creation_date}
-            </ListItemText>
+            <ListItemText style={styleObjPara}>{postDate}</ListItemText>
           </ListItem>
         </List>
 
-        <DeletePostButton />
+        {/* <DeletePostButton /> */}
       </Grid>
-      <Comments currentUserId="1" />
+      <Comments currentUserId="1" postData={postData} />
       <Grid></Grid>
     </Grid>
   );

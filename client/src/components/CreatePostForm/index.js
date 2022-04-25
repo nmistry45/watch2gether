@@ -38,6 +38,9 @@ function CreatePostForm(props) {
       firstName: user.user.firstName,
       lastName: user.user.lastName,
       poster_url: watchGroupData.poster_url,
+      post_id: Math.random(),
+      total_points: 0,
+      email: user.user.email,
     };
     axios
       .post(`${BACKEND_URL}/pt/createPost`, createPostData)
@@ -95,7 +98,7 @@ function CreatePostForm(props) {
               />
             </Grid>
             <Grid item xs={2} pb={2}>
-              <label htmlFor="contained-button-file">
+              {/* <label htmlFor="contained-button-file">
                 <Button
                   variant="contained"
                   component="span"
@@ -109,13 +112,16 @@ function CreatePostForm(props) {
                   />
                   Upload
                 </Button>
-              </label>
-            </Grid>
-            <Grid item xs={2} pb={2}>
+              </label> */}
               <Button type="submit" variant="contained" pl={1}>
                 CREATE POST
               </Button>
             </Grid>
+            {/* <Grid item xs={2} pb={2}>
+              <Button type="submit" variant="contained" pl={1}>
+                CREATE POST
+              </Button>
+            </Grid> */}
           </Grid>
         </Box>
       </Box>

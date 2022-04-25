@@ -46,6 +46,8 @@ app.use(
     origin: [
       "http://localhost:3000",
       "https://watch2gether-front-end-dev.herokuapp.com",
+      "https://watch2gether-front-end-staging.herokuapp.com",
+      "https://watch2gether-front-end-main.herokuapp.com",
     ],
     credentials: true,
   })

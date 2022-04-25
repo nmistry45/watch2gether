@@ -60,7 +60,7 @@ exports.fetchWatchGroup = function (req, res) {
         let formattedData = {};
 
         formattedData.creation_date = moment(watchGroup.creation_date).format(
-          "MMMM Do YYYY, h:mm:ss a"
+          "MMMM Do YYYY"
         );
         formattedData.movie_show_id = watchGroup.movie_show_id;
         formattedData.watchgroup_id = watchGroup.watchgroup_id;
@@ -73,7 +73,6 @@ exports.fetchWatchGroup = function (req, res) {
   );
 };
 
-
 /**
  * Function to fetch WatchGroups based on the user id from mongoDB
  * @param {*} req - The request parameters from the front end
@@ -83,22 +82,21 @@ exports.fetchWatchGroup = function (req, res) {
 //Only to be used for calendar component for fetching events
 exports.fetchWatchGroupByUserID = function (req, res) {
   const filter = {
-       user_email: req.body.email 
+    user_email: req.body.email,
   };
   WatchGroup.find(filter, function (err, watchGroup) {
     if (err) return res.json({ success: false, error: err });
     const formattedResponse = [];
-    watchGroup.map(wg=>{
-        const formattedArray = {};
-        formattedArray.day=wg.creation_date;
-        formattedArray.id=wg.watchgroup_id;
-        formattedArray.movie_show_id=wg.movie_show_id;
-        formattedArray.title=wg.watchgroup_title;
-        formattedArray.user_email=wg.user_email;
-        formattedResponse.push(formattedArray);
-    })
+    watchGroup.map((wg) => {
+      const formattedArray = {};
+      formattedArray.day = wg.creation_date;
+      formattedArray.id = wg.watchgroup_id;
+      formattedArray.movie_show_id = wg.movie_show_id;
+      formattedArray.title = wg.watchgroup_title;
+      formattedArray.user_email = wg.user_email;
+      formattedResponse.push(formattedArray);
+    });
     res.json({ data: formattedResponse });
-
   });
 };
 
@@ -115,9 +113,9 @@ exports.fetchWatchGroupByUser = function (req, res) {
     watchGroupList.forEach((watchGroup) => {
       let formattedData = {};
 
-      formattedData.creation_date = moment(watchGroup.creation_date).format(
-        "MMMM Do YYYY, h:mm:ss a"
-      );
+      formattedData.creation_date = moment(
+        watchGroup.creation_date.toString()
+      ).format("MMMM Do YYYY");
       formattedData.movie_show_id = watchGroup.movie_show_id;
       formattedData.watchgroup_id = watchGroup.watchgroup_id;
       formattedData.watchgroup_title = watchGroup.watchgroup_title;

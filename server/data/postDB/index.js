@@ -17,16 +17,22 @@ exports.insertPost = function (req, res) {
     firstName,
     lastName,
     poster_url,
+    post_id,
+    total_points,
+    email,
   } = req.body;
 
   (createPostData.post_title = post_title),
     (createPostData.post_descr = post_descr),
     (createPostData.watchgroup_id = watchgroup_id),
     (createPostData.movie_show_id = movie_show_id),
-    (createPostData.creation_date = creation_date),
+    (createPostData.creation_date = Date.now().toString()),
     (createPostData.firstName = firstName),
     (createPostData.lastName = lastName),
-    (createPostData.poster_url = poster_url);
+    (createPostData.poster_url = poster_url),
+    (createPostData.post_id = post_id),
+    (createPostData.total_points = total_points),
+    (createPostData.email = email);
 
   createPostData.save((err) => {
     if (err) return res.json({ success: false, error: err });

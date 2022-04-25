@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const existingPostSchema = new mongoose.Schema({
   creation_date: { type: String },
   movie_show_id: { type: String },
-  post_id: { type: String },
+  post_id: { type: Number },
   watchgroup_id: { type: String },
   userid: { type: String },
   poster_url: { type: String },

@@ -7,10 +7,10 @@ import axios from "axios";
  * @returns The function returns the commentdata after the interaction
  * with the database.
  */
-export const GetComments = async (backendComments) => {
+export function GetComments(post_id) {
   const resData = [];
   const returnArray = [];
-  const postData = { post_id: "45" };
+  const postData = { post_id: post_id };
   axios.post(`${BACKEND_URL}/comments/comment`, postData).then((res) => {
     for (let i = 0; i < res.data.data.length; i++) {
       resData[i] = res.data.data[i];
@@ -28,7 +28,7 @@ export const GetComments = async (backendComments) => {
   });
 
   return returnArray;
-};
+}
 /**
  * The function is responsible for creating the container for the create comment module
  * @param {*} text
@@ -36,11 +36,11 @@ export const GetComments = async (backendComments) => {
  * @returns The object of comment data
  */
 
-export const CreateComment = async (text, parentId = null, user) => {
+export const CreateComment = async (text, parentId = null, user, post_id) => {
   const commentData = {
     comment_id: Math.random().toString(36).substr(2, 9),
     comment_text: text,
-    post_id: "45",
+    post_id: post_id,
     author_name: user.user.firstName,
     author_email: user.user.email,
     parent_comment_id: parentId,

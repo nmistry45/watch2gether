@@ -12,6 +12,8 @@ import Box from "@mui/material/Box";
 import axios from "axios";
 import { BACKEND_URL } from "../../config";
 import POSTER from "../../assets/poster_alter.jpg";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+
 /**
  * The  is to create a post component in the front end.
  * it renders the post component using materialUI
@@ -35,8 +37,8 @@ const PostComp = (props) => {
     setCount(count + 1);
     axios
       .post(`${BACKEND_URL}/pt/likePostCount`, {
-        post_id: "1",
-        total_points: count,
+        post_id: postData.post_id,
+        total_points: count + 1,
       })
       .then((res) => {
         console.log(res);
@@ -66,13 +68,9 @@ const PostComp = (props) => {
           />
           <CardContent>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={10}>
-              <Avatar
-                alt="Remy Sharp"
-                xs={6}
-                src="/static/images/avatar/1.jpg"
-              />
+              {/* <AccountCircle sx={{ fontSize: 45 }} />
 
-              <h5 style={{ paddingTop: "5%" }}> {props.time}</h5>
+              <h5 style={{ paddingTop: "5%" }}> {postData.creation_date}</h5> */}
             </Stack>
 
             <Typography gutterBottom variant="h5" component="div" mt={2} pt={1}>

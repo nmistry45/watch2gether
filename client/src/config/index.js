@@ -5,8 +5,6 @@ export const BASE_URL = "https://image.tmdb.org/t/p/original/";
 export const LOCAL_DEV_URL = window.location.origin;
 
 export const BACKEND_URL = "http://localhost:8000";
-// export const BACKEND_URL =
-//   "https://watch2gether-back-end-staging.herokuapp.com";
+// export const BACKEND_URL = "https://watch2gether-back-end-staging.herokuapp.com";
 export const FRONTEND_DEV_URL = window.location.origin;
-// export const FRONTEND_DEV_URL =
-//   "https://watch2gether-front-end-staging.herokuapp.com";
+// export const FRONTEND_DEV_URL ="https://watch2gether-front-end-staging.herokuapp.com";

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import ClickableCard from "../../containers/ClickableCard";
 import Grid from "@mui/material/Grid";
-import NavbarComp from "../../components/Navbar";
+import Navbar from "../../components/Navbar";
 import requests from "../../requests";
 import SearchResult from "../../containers/SearchResult";
 import AuthContext from "../../context/AuthContext";
@@ -52,7 +52,7 @@ function HomePage(props) {
     <Grid container spacing={2} className="App-header">
       <Grid container>
         <Grid item xs={12}>
-          <NavbarComp
+          <Navbar
             data={search}
             fetchSearchResults={fetchSearchResults}
             currentUserEmailId={user}
