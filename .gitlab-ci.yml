@@ -1,0 +1,282 @@
+image: node:latest
+
+cache:
+  paths:
+    - build
+    - node_modules/
+
+variables:
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar" # Defines the location of the analysis task cache
+  GIT_DEPTH: "0" # Tells git to fetch all the branches of the project, required by the analysis task
+
+stages:
+  - build
+  - test
+  - quality_assurance
+  - deploy
+
+#Build front-end
+build_front-end:
+  stage: build
+  # tags:
+  #   - dalfcs_docker_kvm
+  script:
+    - echo "Starting Front-end Build"
+    - cd client/
+    - npm install
+    - npm run build
+    - echo "Build Front-end Successfully!"
+  only:
+    changes:
+      - client/**/*
+
+#Build back-end
+build_back-end:
+  stage: build
+  # tags:
+  #   - dalfcs_docker_kvm
+  script:
+    - echo "Starting Back-end Build"
+    - cd server/
+    - npm install
+    - npm run build
+    - echo "Build Back-end Successfully!"
+  only:
+    changes:
+      - server/**/*
+
+#Test front-end
+test_front-end:
+  stage: test
+  # tags:
+  #   - dalfcs_docker_kvm
+  script:
+    - echo "Testing Front-end App"
+    - cd client/
+    - npm install
+    - npm test
+    - echo "Test Front-end Successfully!"
+  only:
+    changes:
+      - client/**/*
+
+#Test back-end
+test_back-end:
+  stage: test
+  # tags:
+  #   - dalfcs_docker_kvm
+  script:
+    - echo "Testing Back-end App"
+    - cd server/
+    - npm install
+    - npm test
+    - echo "Test Back-end Successfully!"
+  only:
+    changes:
+      - server/**/*
+
+sonarcloud-check:
+  stage: quality_assurance
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - echo "Starting SonarCloud Check"
+    - sonar-scanner
+    - echo "Completed SonarCloud Check"
+  only:
+    - develop
+    - staging
+    - main
+
+####### FRONTEND DEPLOYMENT JOBS #######
+# Deploying frontend to dev env
+deploy_front-end_to_dev:
+  environment:
+    name: watch2gether-front-end-dev
+    url: https://watch2gether-front-end-dev.herokuapp.com/
+  stage: deploy
+  image: ruby:latest
+  before_script:
+    - echo "Deploying to develop front-end server"
+    - cd client/
+    - apt-get update -y
+    - apt-get install -y libssl-dev build-essential wget
+    - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
+    - source /root/.bashrc
+    - nvm install 16.14.0
+    - nvm use 16.14.0
+    - node -v
+    - npm -v
+    - npm install
+    - npm run build
+    - apt-get update -y
+    - apt-get install rubygems -y
+    - gem install dpl
+  script:
+    - dpl --provider=heroku --app=$HEROKU_FRONT_END_DEV_APP_NAME --api-key=$HEROKU_API_KEY
+  only:
+    refs:
+      - develop
+    changes:
+      - client/**/*
+
+# Deploying frontend to staging env
+deploy_front-end_to_staging:
+  environment:
+    name: watch2gether-front-end-staging
+    url: https://watch2gether-front-end-staging.herokuapp.com/
+  stage: deploy
+  image: ruby:latest
+  before_script:
+    - echo "Deploying to staging front-end server"
+    - cd client/
+    - apt-get update -y
+    - apt-get install -y libssl-dev build-essential wget
+    - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
+    - source /root/.bashrc
+    - nvm install 16.14.0
+    - nvm use 16.14.0
+    - node -v
+    - npm -v
+    - npm install
+    - npm run build
+    - apt-get update -y
+    - apt-get install rubygems -y
+    - gem install dpl
+  script:
+    - dpl --provider=heroku --app=$HEROKU_FRONT_END_STAGING_APP_NAME --api-key=$HEROKU_API_KEY
+  only:
+    refs:
+      - staging
+    changes:
+      - client/**/*
+
+# Deploying frontend to main env
+deploy_front-end_to_main:
+  environment:
+    name: watch2gether-front-end-main
+    url: https://watch2gether-front-end-main.herokuapp.com/
+  stage: deploy
+  image: ruby:latest
+  before_script:
+    - echo "Deploying to main front-end server"
+    - cd client/
+    - apt-get update -y
+    - apt-get install -y libssl-dev build-essential wget
+    - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
+    - source /root/.bashrc
+    - nvm install 16.14.0
+    - nvm use 16.14.0
+    - node -v
+    - npm -v
+    - npm install
+    - npm run build
+    - apt-get update -y
+    - apt-get install rubygems -y
+    - gem install dpl
+  script:
+    - dpl --provider=heroku --app=$HEROKU_FRONT_END_MAIN_APP_NAME --api-key=$HEROKU_API_KEY
+  only:
+    refs:
+      - main
+    changes:
+      - client/**/*
+
+####### BACKEND DEPLOYMENT JOBS #######
+# Deploying backend to dev env
+deploy_back-end_to_dev:
+  environment:
+    name: watch2gether-back-end-dev
+    url: https://watch2gether-back-end-dev.herokuapp.com/
+  stage: deploy
+  image: ruby:latest
+  before_script:
+    - echo "Deploying to develop back-end server"
+    - cd server/
+    - apt-get update -y
+    - apt-get install -y libssl-dev build-essential wget
+    - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
+    - source /root/.bashrc
+    - nvm install 16.14.0
+    - nvm use 16.14.0
+    - node -v
+    - npm -v
+    - npm install
+    - npm run build
+    - apt-get update -y
+    - apt-get install rubygems -y
+    - gem install dpl
+  script:
+    - dpl --provider=heroku --app=$HEROKU_BACK_END_DEV_APP_NAME --api-key=$HEROKU_API_KEY
+  only:
+    refs:
+      - develop
+    changes:
+      - server/**/*
+
+# Deploying backend to staging env
+deploy_back-end_to_staging:
+  environment:
+    name: watch2gether-back-end-staging
+    url: https://watch2gether-back-end-staging.herokuapp.com/
+  stage: deploy
+  image: ruby:latest
+  before_script:
+    - echo "Deploying to staging back-end server"
+    - cd server/
+    - apt-get update -y
+    - apt-get install -y libssl-dev build-essential wget
+    - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
+    - source /root/.bashrc
+    - nvm install 16.14.0
+    - nvm use 16.14.0
+    - node -v
+    - npm -v
+    - npm install
+    - npm run build
+    - apt-get update -y
+    - apt-get install rubygems -y
+    - gem install dpl
+  script:
+    - dpl --provider=heroku --app=$HEROKU_BACK_END_STAGING_APP_NAME --api-key=$HEROKU_API_KEY
+  only:
+    refs:
+      - staging
+    changes:
+      - server/**/*
+
+# Deploying backend to main env
+deploy_back-end_to_main:
+  environment:
+    name: watch2gether-back-end-main
+    url: https://watch2gether-back-end-main.herokuapp.com/
+  stage: deploy
+  image: ruby:latest
+  before_script:
+    - echo "Deploying to main back-end server"
+    - cd server/
+    - apt-get update -y
+    - apt-get install -y libssl-dev build-essential wget
+    - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
+    - source /root/.bashrc
+    - nvm install 16.14.0
+    - nvm use 16.14.0
+    - node -v
+    - npm -v
+    - npm install
+    - npm run build
+    - apt-get update -y
+    - apt-get install rubygems -y
+    - gem install dpl
+  script:
+    - dpl --provider=heroku --app=$HEROKU_BACK_END_MAIN_APP_NAME --api-key=$HEROKU_API_KEY
+  only:
+    refs:
+      - main
+    changes:
+      - server/**/*
